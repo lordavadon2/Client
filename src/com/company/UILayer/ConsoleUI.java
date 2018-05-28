@@ -50,7 +50,7 @@ public class ConsoleUI {
     }
 
     public void removeFile(){
-        transfer("frem", preMenu(FILENAME));        //Удалить файл
+        transfer("frem", preMenu(FILENAME) + ".txt");        //Удалить файл
     }
 
     public void createDir(){
