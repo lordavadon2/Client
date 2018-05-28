@@ -32,6 +32,11 @@ public class Progress implements Runnable {
                 i = 0;
             }
             i++;
+            try {
+                Thread.sleep(20);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
         if (!errorFlag){
             System.out.println("\nВыполнено\n");
