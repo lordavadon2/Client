@@ -40,7 +40,7 @@ public class ConsoleUI implements IConsoleUI {
         }catch (SocketException e){
             pb.setErrorFlag(true);
             pb.setEnabled(false);
-            System.out.println("\rОшибка: " + e.getMessage());
+            System.out.println("\nОшибка: " + e.getMessage()+ "\n");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

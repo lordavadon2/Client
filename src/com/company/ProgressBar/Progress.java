@@ -34,7 +34,7 @@ public class Progress implements Runnable {
             i++;
         }
         if (!errorFlag){
-            System.out.println("\rВыполнено\n");
+            System.out.println("\nВыполнено\n");
         }
     }
 }
