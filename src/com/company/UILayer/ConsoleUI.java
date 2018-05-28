@@ -1,66 +1,94 @@
 package com.company.UILayer;
 
-import com.company.ClientComm.ConnectionClient;
+import com.company.ClientComm.*;
+import com.company.ProgressBar.*;
 
+import java.net.SocketException;
 import java.util.Scanner;
 import static com.company.UILayer.ConsoleStrings.*;
 
-public class ConsoleUI {
+public class ConsoleUI implements IConsoleUI {
 
-    ConnectionClient client;
+    IConnectionClient client;
     Scanner scan;
+    Progress pb;
 
-    public ConsoleUI(ConnectionClient client, Scanner scan) {
+    public ConsoleUI(IConnectionClient client, Scanner scan, Progress pb) {
         this.client = client;
         this.scan = scan;
+        this.pb = pb;
     }
 
-    private void transfer(String command, String path){
+    @Override
+    public void transfer(String command, String path){
         transfer(command, path, "");
     }
 
-    private void transfer(String command, String path, String data){
+    @Override
+    public void transfer(String command, String path, String data){
+        Thread progress = new Thread(pb);
+        progress.start();
         client.write(command + "#\\" + path + "#" + data);
-        String result = client.read();
-        String[] listResult = result.split("#");
-        for (String str: listResult) {
-            System.out.println(str);
+        try {
+            String result = client.read();
+            pb.setEnabled(false);
+            Thread.sleep(100);
+            String[] listResult = result.split("#");
+            for (String str : listResult) {
+                    System.out.println(str);
+            }
+        }catch (SocketException e){
+            pb.setErrorFlag(true);
+            pb.setEnabled(false);
+            System.out.println("\rОшибка: " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
+
     }
 
-    private String preMenu(String text){
+    @Override
+    public String preMenu(String text){
         System.out.println(text);
         return scan.nextLine();
     }
 
-    public void showDirFile(){
+    @Override
+    public void showDirFile() {
         transfer("show", preMenu(PATH));    // Показать файлы и директории
     }
 
-    public void createFile(){
+    @Override
+    public void createFile() {
         transfer("fcreate", preMenu(FILENAME) + ".txt");     //Создать файл
     }
 
-    public void changeFile(){
+    @Override
+    public void changeFile() {
         transfer("fchange", preMenu(FILENAME) + ".txt", preMenu(TEXTCHANGE));   //Изменить текст в файле
     }
 
-    public void viewFile(){
+    @Override
+    public void viewFile() {
         transfer("fshow", preMenu(FILENAME) + ".txt");       //Показать текст в файле
     }
 
-    public void removeFile(){
+    @Override
+    public void removeFile() {
         transfer("frem", preMenu(FILENAME) + ".txt");        //Удалить файл
     }
 
-    public void createDir(){
+    @Override
+    public void createDir() {
         transfer("dcreate", preMenu(FILENAME));        //Создать директорию
     }
 
-    public void removeDir(){
+    @Override
+    public void removeDir() {
         transfer("drem", preMenu(FILENAME));        //Удалить директорию
     }
 
+    @Override
     public boolean mainMenu() {
         while (true) {
             System.out.println(GETMAINMENUTEXT);

@@ -5,11 +5,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 
 /**
  * Created by Brainacad4 on 24.05.2018.
  */
-public class ConnectionClient {
+public class ConnectionClient implements IConnectionClient {
 
     Socket socket;
     PrintWriter writer;
@@ -22,15 +23,16 @@ public class ConnectionClient {
         reader = new BufferedReader(stream);
     }
 
-    public String read() {
+    @Override
+    public String read()throws SocketException {
         try {
             return reader.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new SocketException("соединение с сервером отсутствует");
         }
-        return null;
     }
 
+    @Override
     public void write(String data)
     {
         writer.println(data);

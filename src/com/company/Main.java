@@ -1,7 +1,8 @@
 package com.company;
 
-import com.company.ClientComm.ConnectionClient;
-import com.company.UILayer.ConsoleUI;
+import com.company.ClientComm.*;
+import com.company.ProgressBar.*;
+import com.company.UILayer.*;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -14,10 +15,11 @@ public class Main {
             Scanner scan = new Scanner(System.in);
             System.out.println("Введите адресс сервера: ");
             String adress = scan.nextLine();
-            ConnectionClient client = new ConnectionClient(adress,2000);
+            IConnectionClient client = new ConnectionClient(adress,2000);
 //            ConnectionClient client = new ConnectionClient("localhost",2000);
+            Progress pb = new Progress();
             System.out.println("Соединение с сервером установленно");
-            ConsoleUI console = new ConsoleUI(client, scan);
+            IConsoleUI console = new ConsoleUI(client, scan, pb);
             while (console.mainMenu());
         } catch (IOException e) {
             System.out.println("Ошибка соединения с сервером");
